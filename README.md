@@ -4,7 +4,7 @@
 
 ## 🔗 Live Dashboard Link
 
-👉 https://prod-apsoutheast-b.online.tableau.com/#/site/aryanjagtap33-6269c4424d/workbooks/1393677/views
+👉https://prod-apsoutheast-b.online.tableau.com/#/site/aryanjagtap33-6269c4424d/workbooks/1393677/views
 
 ---
 
