@@ -1,0 +1,71 @@
+# -------------------------------
+# 1. Import Libraries
+# -------------------------------
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.datasets import load_iris
+from sklearn.cluster import KMeans
+from sklearn.metrics import confusion_matrix
+
+# -------------------------------
+# 2. Load Dataset
+# -------------------------------
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# -------------------------------
+# 3. Elbow Method to Find Optimal K
+# -------------------------------
+wcss = []
+
+for k in range(1, 11):
+    kmeans = KMeans(n_clusters=k, random_state=42)
+    kmeans.fit(X)
+    wcss.append(kmeans.inertia_)
+
+# Plot Elbow Graph
+plt.figure()
+plt.plot(range(1, 11), wcss, marker='o')
+plt.xlabel("Number of Clusters (K)")
+plt.ylabel("WCSS")
+plt.title("Elbow Method (Iris Dataset)")
+plt.show()
+
+# -------------------------------
+# 4. Choose Optimal K
+# (From graph → K = 3)
+# -------------------------------
+optimal_k = 3
+
+# -------------------------------
+# 5. Apply K-Means with Optimal K
+# -------------------------------
+kmeans = KMeans(n_clusters=optimal_k, random_state=42)
+kmeans.fit(X)
+
+labels = kmeans.labels_
+centroids = kmeans.cluster_centers_
+
+print("Optimal K:", optimal_k)
+print("\nCentroids:\n", centroids)
+print("\nCluster Labels:\n", labels)
+
+# -------------------------------
+# 6. Compare with Actual Labels
+# -------------------------------
+print("\nConfusion Matrix:")
+print(confusion_matrix(y, labels))
+
+# -------------------------------
+# 7. Visualization (2D Scatter Plot)
+# Using Petal Length & Petal Width
+# -------------------------------
+plt.figure()
+plt.scatter(X[:, 2], X[:, 3], c=labels)
+plt.xlabel("Petal Length")
+plt.ylabel("Petal Width")
+plt.title("K-Means Clustering (K=3)")
+plt.show()
