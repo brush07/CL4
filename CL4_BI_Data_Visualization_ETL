@@ -1,0 +1,76 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# ----------------------------
+# 1) EXTRACT
+# ----------------------------
+# Example raw sales data
+data = {
+    "OrderID": [101, 102, 103, 104, 105, 106, 107, 108],
+    "Date": ["2026-01-01", "2026-01-02", "2026-01-02", "2026-01-03",
+             "2026-01-04", "2026-01-04", "2026-01-05", "2026-01-06"],
+    "Category": ["Books", "Electronics", "Books", "Clothing",
+                 "Electronics", "Clothing", "Books", "Clothing"],
+    "Sales": [500, 1200, 300, 800, None, 650, 400, 900],
+    "Profit": [80, 200, 50, 120, 180, None, 60, 140]
+}
+
+df = pd.DataFrame(data)
+
+print("Raw Data:")
+print(df)
+
+# ----------------------------
+# 2) TRANSFORM
+# ----------------------------
+# Basic preprocessing
+df["Date"] = pd.to_datetime(df["Date"])
+df["Sales"] = df["Sales"].fillna(df["Sales"].mean())
+df["Profit"] = df["Profit"].fillna(df["Profit"].mean())
+
+# Add new column
+df["Month"] = df["Date"].dt.month_name()
+
+# Group data for visualization
+category_sales = df.groupby("Category")["Sales"].sum()
+daily_sales = df.groupby("Date")["Sales"].sum()
+
+print("\nTransformed Data:")
+print(df)
+
+# ----------------------------
+# 3) LOAD
+# ----------------------------
+# Save cleaned data to CSV
+df.to_csv("cleaned_sales_data.csv", index=False)
+print("\nCleaned data saved as cleaned_sales_data.csv")
+
+# ----------------------------
+# 4) VISUALIZATION
+# ----------------------------
+
+# Bar chart: Sales by category
+plt.figure()
+category_sales.plot(kind="bar")
+plt.title("Sales by Category")
+plt.xlabel("Category")
+plt.ylabel("Total Sales")
+plt.tight_layout()
+plt.show()
+
+# Line chart: Daily sales trend
+plt.figure()
+daily_sales.plot(kind="line", marker="o")
+plt.title("Daily Sales Trend")
+plt.xlabel("Date")
+plt.ylabel("Sales")
+plt.tight_layout()
+plt.show()
+
+# Pie chart: Category distribution
+plt.figure()
+category_sales.plot(kind="pie", autopct="%1.1f%%")
+plt.title("Sales Distribution by Category")
+plt.ylabel("")
+plt.tight_layout()
+plt.show()
