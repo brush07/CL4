@@ -1,0 +1,56 @@
+# Hadoop MapReduce Simulation in Python
+# Task: Count the frequency of a target word using MapReduce logic
+
+from collections import defaultdict
+
+def hadoop_mapreduce_word_frequency(file_content, target_word):
+    """
+    Simulates Hadoop MapReduce for word frequency counting.
+    MAP -> SHUFFLE -> REDUCE
+    """
+
+    # ---------------- MAP PHASE ----------------
+    # Emit (word, 1) for every matching word
+    intermediate = []
+    for line in file_content.strip().split("\n"):
+        words = line.lower().split()
+        for word in words:
+            if word == target_word.lower():
+                intermediate.append((word, 1))
+
+    # ---------------- SHUFFLE PHASE ----------------
+    # Group all values by key (word)
+    grouped = defaultdict(list)
+    for key, value in intermediate:
+        grouped[key].append(value)
+
+    # ---------------- REDUCE PHASE ----------------
+    # Sum all counts for each key
+    result = {}
+    for key in grouped:
+        result[key] = sum(grouped[key])
+
+    return result
+
+
+# ---------------- MAIN PROGRAM ----------------
+if __name__ == "__main__":
+    # Sample input content
+    file_content = """
+    data science is growing
+    big data is powerful
+    data analysis is important
+    """
+
+    # Word to search
+    target_word = "data"
+
+    # Run Hadoop MapReduce simulation
+    frequency_result = hadoop_mapreduce_word_frequency(file_content, target_word)
+
+    # Print result
+    if frequency_result:
+        for word, count in frequency_result.items():
+            print(f"Frequency of '{word}' is: {count}")
+    else:
+        print(f"Word '{target_word}' not found.")
