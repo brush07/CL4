@@ -1,0 +1,90 @@
+# Hadoop / MapReduce Simulation in Python
+# Matrix Multiplication using the MapReduce paradigm
+
+from collections import defaultdict
+
+def matrix_multiply_mapreduce(A, B):
+    # ------------------ VALIDATION ------------------
+    if not A or not B or not A[0] or not B[0]:
+        raise ValueError("Input matrices must not be empty.")
+
+    m = len(A)          # rows in A
+    n = len(A[0])       # columns in A
+    if any(len(row) != n for row in A):
+        raise ValueError("All rows in matrix A must have the same length.")
+
+    if any(len(row) != len(B[0]) for row in B):
+        raise ValueError("All rows in matrix B must have the same length.")
+
+    if n != len(B):
+        raise ValueError("Number of columns in A must equal number of rows in B.")
+
+    p = len(B[0])       # columns in B
+
+    # ------------------ MAP PHASE ------------------
+    # In Hadoop MapReduce, the mapper emits key-value pairs.
+    # Key = (i, j) for the result cell
+    # Value = tagged element from matrix A or B
+
+    intermediate = []
+
+    # Mapper for Matrix A
+    for i in range(m):
+        for k in range(n):
+            for j in range(p):
+                intermediate.append(((i, j), ("A", k, A[i][k])))
+
+    # Mapper for Matrix B
+    for k in range(n):
+        for j in range(p):
+            for i in range(m):
+                intermediate.append(((i, j), ("B", k, B[k][j])))
+
+    # ------------------ SHUFFLE / SORT PHASE ------------------
+    # Hadoop groups all values with the same key together
+    grouped = defaultdict(list)
+    for key, value in intermediate:
+        grouped[key].append(value)
+
+    # ------------------ REDUCE PHASE ------------------
+    # Reducer computes the final value for each cell
+    result = [[0 for _ in range(p)] for _ in range(m)]
+
+    for key, values in grouped.items():
+        i, j = key
+        a_values = {}
+        b_values = {}
+
+        for matrix_name, k, val in values:
+            if matrix_name == "A":
+                a_values[k] = val
+            else:
+                b_values[k] = val
+
+        total = 0
+        for k in range(n):
+            total += a_values.get(k, 0) * b_values.get(k, 0)
+
+        result[i][j] = total
+
+    return result
+
+
+# ------------------ INPUT MATRICES ------------------
+A = [
+    [1, 2],
+    [3, 4]
+]
+
+B = [
+    [5, 6],
+    [7, 8]
+]
+
+# ------------------ CALL FUNCTION ------------------
+result = matrix_multiply_mapreduce(A, B)
+
+# ------------------ OUTPUT ------------------
+print("Result Matrix:")
+for row in result:
+    print(row)
