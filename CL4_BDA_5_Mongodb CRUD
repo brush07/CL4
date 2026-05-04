@@ -1,0 +1,96 @@
+🧠 PART 0 — Open Everything
+Step 1:
+Open MongoDB Compass
+Step 2:
+Click "Connect" (big green button)
+Step 3:
+Wait till it connects
+Step 4:
+Now click "Open MongoDB Shell" (or "MONGOSH")
+
+👉 A black terminal-like screen opens
+👉 This is where you type commands
+
+🧠 PART 1 — Create Database & Collection
+Step 5: Type this 👇 and press ENTER
+use schoolDB
+
+👉 This creates database schoolDB
+
+Step 6: Type this 👇 and press ENTER
+db.createCollection("students")
+
+👉 Now collection students is ready
+
+🧠 PART 2 — INSERT DATA
+Step 7: Insert ONE student
+
+Type 👇 and press ENTER
+
+db.students.insertOne({
+  name: "Aryan",
+  marks: 85
+})
+
+👉 Done! One student added
+
+Step 8: Insert MANY students
+
+Type 👇 and press ENTER
+
+db.students.insertMany([
+  {name: "Rahul", marks: 70},
+  {name: "Priya", marks: 90},
+  {name: "Neel", marks: 60}
+])
+
+👉 Now multiple students added
+
+🧠 PART 3 — READ DATA
+Step 9: See ALL data
+
+Type 👇 and press ENTER
+
+db.students.find()
+
+👉 You will see all students
+
+🧠 PART 4 — UPDATE DATA
+Step 10: Update ONE student
+
+Type 👇 and press ENTER
+
+db.students.updateOne(
+  {name: "Aryan"},
+  {$set: {marks: 95}}
+)
+
+👉 Aryan’s marks changed to 95
+
+Step 11: Update MANY students
+
+Type 👇 and press ENTER
+
+db.students.updateMany(
+  {},
+  {$set: {status: "active"}}
+)
+
+👉 All students now have status = active
+
+🧠 PART 5 — DELETE DATA
+Step 12: Delete ONE student
+
+Type 👇 and press ENTER
+
+db.students.deleteOne({name: "Neel"})
+
+👉 Neel is removed
+
+Step 13: Delete ALL students
+
+Type 👇 and press ENTER
+
+db.students.deleteMany({})
+
+👉 Everything is deleted
